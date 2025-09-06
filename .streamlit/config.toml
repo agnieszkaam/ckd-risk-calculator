@@ -1,0 +1,7 @@
+[theme]
+base = "light"
+backgroundColor = "#ffffff"                # we'll override with CSS gradient
+secondaryBackgroundColor = "#ffffff"
+primaryColor = "#6495ed"                   # blue — buttons, actives
+textColor = "#0f172a"                      # near-black
+font = "sans serif"
