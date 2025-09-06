@@ -1,0 +1,39 @@
+{
+    "schema_version": 1,
+    "outcomes": {
+        "death_in_hospital": {
+            "intercept": -3.626618326646352,
+            "coeffs": {
+                "female": 0.08918733572906988,
+                "age_ge70": 1.0286118352130158,
+                "scheduled_admission": -1.5737632196785072,
+                "warm_month": -0.16745276447477983,
+                "comorb_neoplasm": 1.3160687975691372,
+                "comorb_blood": -0.46683572132519596,
+                "comorb_endocrine": -0.053671572207291546,
+                "comorb_circulatory": 0.673739282113428,
+                "comorb_respiratory": 1.394029590582166,
+                "comorb_digestive": 0.5644012686346819
+            }
+        },
+        "prolonged_los": {
+            "intercept": -1.2420022660374157,
+            "coeffs": {
+                "female": -0.0006133412597354633,
+                "age_ge70": 0.18523527583310548,
+                "scheduled_admission": -0.775901619233665,
+                "warm_month": 0.007373867777584781,
+                "comorb_neoplasm": 0.3653092165567476,
+                "comorb_blood": 0.2225307350879031,
+                "comorb_endocrine": 0.24457910617232317,
+                "comorb_circulatory": 0.33618664995001396,
+                "comorb_respiratory": 1.0012102827442075,
+                "comorb_digestive": 0.677315963084242
+            }
+        }
+    },
+    "meta": {
+        "reference_group": "male, <70, emergency, Sep–Feb, no comorbidities",
+        "notes": "Statsmodels betas/log-odds with intercepts."
+    }
+}
