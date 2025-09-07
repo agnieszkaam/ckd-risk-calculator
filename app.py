@@ -35,29 +35,63 @@ def predict(outcome: str, X: dict) -> float:
 st.markdown(
     """
 <style>
-div.block-container { max-width: 720px; padding-top: calc(1.5rem + env(safe-area-inset-top)); }
-html, body { font-size: 18px; }
+/* Layout */
+div.block-container { max-width: 720px; padding-top: calc(1.2rem + env(safe-area-inset-top)); }
 
-/* Metric styles */
-div[data-testid="stMetricValue"] { font-size: 2rem; color: #c85040; }
-div[data-testid="stMetricLabel"] { font-size: 0.95rem; }
+/* Fluid type: scales from small phones to desktop */
+html, body { font-size: clamp(16px, 2.6vw, 18px); }
+h1 { font-size: clamp(22px, 5vw, 34px); margin-bottom: .25rem; text-align:center; }
+h2, h3 { font-size: clamp(18px, 3.6vw, 22px); }
 
-/* Buttons: apply to normal + form submit, same size & color */
-.stButton > button,
-.stForm > form button {
-  background:#6495ed; border-color:#6495ed; color:#fff;
-  font-size:1rem; padding:.8rem 1.2rem; width:100%;
+/* Metrics: big, readable on phones */
+div[data-testid="stMetricValue"] { font-size: clamp(24px, 7vw, 40px); color: #c85040; }
+div[data-testid="stMetricLabel"] { font-size: clamp(12px, 3vw, 16px); }
+
+/* Make Calculate + New calculation identical */
+.stForm button[kind],           /* form submit */
+.stButton > button {            /* normal button */
+  appearance: none;
+  background: #6495ed !important;
+  border: 1px solid #6495ed !important;
+  color: #fff !important;
+  width: 100%;
+  font-size: clamp(16px, 3.5vw, 18px);
+  /* exact same height on both */
+  min-height: 48px !important;
+  height: 48px !important;
+  padding: 0 16px !important;   /* vertical height now controlled by height */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  white-space: nowrap;          /* prevent wrapping -> keeps heights equal */
 }
-.stButton > button:hover,
-.stForm > form button:hover { filter:brightness(.96); }
+.stForm button[kind]:hover,
+.stButton > button:hover { filter: brightness(.96); }
+
 
 /* Notice box */
-.notice { background:#fff2ef; border:1px solid #f6c6bf; color:#c85040; padding:10px 12px; border-radius:10px; font-size:0.95rem; }
+.notice {
+  background:#fff2ef; border:1px solid #f6c6bf; color:#c85040;
+  padding:10px 12px; border-radius:10px; font-size: clamp(13px, 3.2vw, 15px);
+}
 
-/* Always show borders on selectboxes (Age, Admission month) */
-div[data-baseweb="select"] > div { border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+/* Always-visible borders + bigger tap targets for selects */
+div[data-baseweb="select"] > div {
+  border: 1px solid #cbd5e1 !important; box-shadow: none !important; min-height: 44px;
+}
 div[data-baseweb="select"] > div:hover { border-color: #94a3b8 !important; }
 div[data-baseweb="select"] > div:focus-within { box-shadow: none !important; }
+
+/* Radios/checkboxes: larger labels/tap area */
+div[role="radiogroup"] label, div[data-baseweb="checkbox"] label { padding: 6px 0; font-size: clamp(16px, 3.5vw, 18px); }
+
+/* Stack columns on small screens (metrics one per row) */
+@media (max-width: 480px) {
+  [data-testid="column"] { width:100% !important; flex: 1 0 100% !important; }
+  [data-testid="column"] + [data-testid="column"] { margin-top: .5rem; }
+}
 </style>
 """,
     unsafe_allow_html=True,
@@ -65,7 +99,7 @@ div[data-baseweb="select"] > div:focus-within { box-shadow: none !important; }
 
 
 st.markdown(
-    '<h1 style="text-align:center;">CKD Hospital Outcomes<br>Risk Calculator</h1>',
+    '<h2 style="text-align:center;">CKD Hospital Outcomes<br>Risk Calculator</h2>',
     unsafe_allow_html=True,
 )
 st.markdown(
@@ -120,7 +154,9 @@ if not st.session_state.show_results:
         ]
         comorb = {key: int(st.checkbox(label)) for label, key in COMORB_LIST}
 
-        submitted = st.form_submit_button("Calculate risk", use_container_width=True)
+        submitted = st.form_submit_button(
+            "Calculate risk", type="primary", use_container_width=True
+        )
 
     if submitted:
         admission_month = months.index(month_name) + 1
@@ -146,9 +182,9 @@ else:
         st.metric("In-Hospital Death", f"{r.get('death', 0.0)*100:.1f}%")
         st.caption("Death from any cause during hospitalization.")
     with c2:
-        st.metric("Prolonged Length of Stay (≥8 days)", f"{r.get('los', 0.0)*100:.1f}%")
+        st.metric("Prolonged Length of Stay", f"{r.get('los', 0.0)*100:.1f}%")
         st.caption("Hospital stay of 8 days or longer.")
 
-    if st.button("New calculation", use_container_width=True):
+    if st.button("New calculation", type="primary", use_container_width=True):
         st.session_state.clear()
         st.rerun()
