@@ -7,6 +7,9 @@ import streamlit as st
 
 
 # ---- model loading ----
+st.set_page_config(page_title="CKD Hospital Risk (Prototype)", layout="centered")
+
+
 @st.cache_data
 def load_cfg():
     p = Path(__file__).parent / "data" / "model_coeffs.json"
@@ -28,7 +31,7 @@ def predict(outcome: str, X: dict) -> float:
 
 
 # ---- UI ----
-st.set_page_config(page_title="CKD Hospital Risk (Prototype)", layout="centered")
+
 st.markdown(
     """
 <style>
@@ -61,7 +64,10 @@ div[data-baseweb="select"] > div:focus-within { box-shadow: none !important; }
 )
 
 
-st.title("CKD Hospital Outcomes Risk Calculator")
+st.markdown(
+    '<h1 style="text-align:center;">CKD Hospital Outcomes<br>Risk Calculator</h1>',
+    unsafe_allow_html=True,
+)
 st.markdown(
     '<div class="notice">Research demo — Not for clinical use</div>',
     unsafe_allow_html=True,
