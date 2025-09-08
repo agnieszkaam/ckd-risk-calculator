@@ -49,6 +49,10 @@ def scroll_to(selector="#top", smooth=True):
     )
 
 
+def queue_scroll(selector):
+    st.session_state["_scroll_target"] = selector
+
+
 # ---- UI ----
 # Mobile-first CSS: fluid typography, consistent button styles, visible select borders.
 st.markdown(
@@ -113,7 +117,7 @@ if "show_results" not in st.session_state:
 
 if not st.session_state.show_results:
     # Eligibility gate (stops early if not CKD primary)
-    scroll_to("#top", smooth=False)
+    queue_scroll("#top")
     st.markdown("##### Is the primary diagnosis Chronic Kidney Disease (ICD-10 N18.*)?")
     primary_ckd = st.radio(" ", ["Yes", "No / Unsure"], label_visibility="collapsed")
     if primary_ckd != "Yes":
@@ -196,6 +200,7 @@ if not st.session_state.show_results:
             st.rerun()
 else:
     # Results-only view (compact metrics for mobile)
+    queue_scroll("#top")
     r = st.session_state.get("results", {})
     st.subheader("Predicted risks*")
     c1, c2 = st.columns(2)
@@ -205,8 +210,6 @@ else:
     with c2:
         st.metric("Prolonged Length of Stay", f"{r.get('los', 0.0)*100:.1f}%")
         st.caption("Hospital stay of 8 days or longer.")
-
-    scroll_to("#top")
 
     # Only show the list if inputs were captured
     inputs = st.session_state.get("input_summary")
@@ -220,3 +223,16 @@ else:
         st.rerun()
 
     st.caption("*Outputs are estimated probabilities (uncalibrated).")
+
+target = st.session_state.get("_scroll_target")
+if target:
+    components.html(
+        f"""
+        <script>
+        const el = window.parent.document.querySelector('{target}');
+        if (el) el.scrollIntoView({{behavior: 'smooth', block: 'start'}});
+        </script>
+        """,
+        height=0,
+    )
+    st.session_state["_scroll_target"] = None
