@@ -4,10 +4,12 @@ import json
 import math
 from pathlib import Path
 import streamlit as st
+import streamlit.components.v1 as components
 
 # ---- page & model loading ----
 # Must be the FIRST Streamlit call on the page.
 st.set_page_config(page_title="CKD Hospital Risk (Prototype)", layout="centered")
+st.markdown('<div id="top"></div>', unsafe_allow_html=True)
 
 
 @st.cache_data  # cache file read across reruns; invalidates if file changes
@@ -30,6 +32,20 @@ def predict(outcome: str, X: dict) -> float:
         float(spec["coeffs"].get(k, 0.0)) * float(X.get(k, 0.0)) for k in spec["coeffs"]
     )
     return 1.0 / (1.0 + math.exp(-eta))
+
+
+def scroll_to(selector="#top", smooth=True):
+    """Scroll the Streamlit page to a CSS selector (e.g., '#top', '#results')."""
+    behavior = "smooth" if smooth else "instant"
+    components.html(
+        f"""
+        <script>
+        const el = window.parent.document.querySelector('{selector}');
+        if (el) el.scrollIntoView({{behavior: '{behavior}', block: 'start'}});
+        </script>
+        """,
+        height=0,
+    )
 
 
 # ---- UI ----
@@ -88,12 +104,15 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
 # simple state flag: show form first, then results-only view
 if "show_results" not in st.session_state:
     st.session_state.show_results = False
 
+
 if not st.session_state.show_results:
     # Eligibility gate (stops early if not CKD primary)
+    scroll_to("#top", smooth=False)
     st.markdown("##### Is the primary diagnosis Chronic Kidney Disease (ICD-10 N18.*)?")
     primary_ckd = st.radio(" ", ["Yes", "No / Unsure"], label_visibility="collapsed")
     if primary_ckd != "Yes":
@@ -176,6 +195,7 @@ if not st.session_state.show_results:
             st.rerun()
 else:
     # Results-only view (compact metrics for mobile)
+    st.markdown('<div id="results"></div>', unsafe_allow_html=True)
     r = st.session_state.get("results", {})
     st.subheader("Predicted risks*")
     c1, c2 = st.columns(2)
@@ -185,6 +205,8 @@ else:
     with c2:
         st.metric("Prolonged Length of Stay", f"{r.get('los', 0.0)*100:.1f}%")
         st.caption("Hospital stay of 8 days or longer.")
+
+    scroll_to("#results")
 
     # Only show the list if inputs were captured
     inputs = st.session_state.get("input_summary")
