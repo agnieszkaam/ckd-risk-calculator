@@ -95,6 +95,12 @@ div[role="radiogroup"] label, div[data-baseweb="checkbox"] label { padding: 6px 
   [data-testid="column"] { width:100% !important; flex: 1 0 100% !important; }
   [data-testid="column"] + [data-testid="column"] { margin-top: .5rem; }
 }
+
+/* Footer */
+.footer { margin-top: 1.25rem; padding: 8px 0 24px; text-align:center; color:#64748b; }
+.footer a { color:#6495ed; text-decoration:none; }
+.footer a:hover { text-decoration:underline; }
+
 </style>
 """,
     unsafe_allow_html=True,
@@ -223,6 +229,19 @@ else:
         st.rerun()
 
     st.caption("*Outputs are estimated probabilities (uncalibrated).")
+
+# --- footer ---
+st.markdown(
+    """
+    <div class="footer">
+      🔗 <a href="https://www.linkedin.com/in/mazureka/" target="_blank" rel="noopener">
+      LinkedIn: Agnieszka Mazurek
+      </a>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 target = st.session_state.get("_scroll_target")
 if target:
