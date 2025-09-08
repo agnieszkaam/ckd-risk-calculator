@@ -177,7 +177,7 @@ if not st.session_state.show_results:
 else:
     # Results-only view (compact metrics for mobile)
     r = st.session_state.get("results", {})
-    st.subheader("Predicted risks")
+    st.subheader("Predicted risks*")
     c1, c2 = st.columns(2)
     with c1:
         st.metric("In-Hospital Death", f"{r.get('death', 0.0)*100:.1f}%")
@@ -196,3 +196,5 @@ else:
     if st.button("New calculation", type="primary", use_container_width=True):
         st.session_state.clear()
         st.rerun()
+
+    st.caption("*Outputs are estimated probabilities (uncalibrated).")

@@ -1,7 +1,7 @@
 markdown
 # CKD Hospital Outcomes Risk Calculator (Prototype)
 
-Streamlit app for a logistic-regression–based risk calculator estimating **in-hospital death** and **prolonged length of stay** among patients with chronic kidney disease (CKD). Research prototype to accompany a conference poster. **Not for clinical use.**
+Streamlit app for a logistic-regression–based risk calculator that outputs **estimated probabilities**(uncalibrated) of **in-hospital death** and **prolonged length of stay** among patients with chronic kidney disease (CKD). Research prototype to accompany a conference poster. **Not for clinical use.**
 
 > **Disclosure:** This repository (including code and this README) were drafted with assistance from ChatGPT and then reviewed/edited by the author.
 
