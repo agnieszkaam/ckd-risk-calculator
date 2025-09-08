@@ -8,6 +8,7 @@ import streamlit.components.v1 as components
 
 # ---- page & model loading ----
 # Must be the FIRST Streamlit call on the page.
+
 st.set_page_config(page_title="CKD Hospital Risk (Prototype)", layout="centered")
 st.markdown('<div id="top"></div>', unsafe_allow_html=True)
 
@@ -195,7 +196,6 @@ if not st.session_state.show_results:
             st.rerun()
 else:
     # Results-only view (compact metrics for mobile)
-    st.markdown('<div id="results"></div>', unsafe_allow_html=True)
     r = st.session_state.get("results", {})
     st.subheader("Predicted risks*")
     c1, c2 = st.columns(2)
@@ -206,7 +206,7 @@ else:
         st.metric("Prolonged Length of Stay", f"{r.get('los', 0.0)*100:.1f}%")
         st.caption("Hospital stay of 8 days or longer.")
 
-    scroll_to("#results")
+    scroll_to("#top")
 
     # Only show the list if inputs were captured
     inputs = st.session_state.get("input_summary")
